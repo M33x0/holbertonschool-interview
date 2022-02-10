@@ -23,7 +23,7 @@ unsigned long reverse(unsigned long n, unsigned long reversed)
  */
 int is_palindrome(unsigned long n)
 {
-	unsigned long reversed
+	unsigned long reversed;
 
 	reversed = reverse(n, 0);
 	if (n == reversed)
