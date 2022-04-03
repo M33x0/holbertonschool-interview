@@ -126,7 +126,7 @@ heap_t *heap_insert(heap_t **root, int value)
 		temp->left = new;
 	}
 
-	else 
+	else
 	{
 		temp->right = new;
 	}
