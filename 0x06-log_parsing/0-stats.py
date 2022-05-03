@@ -1,47 +1,43 @@
 #!/usr/bin/python3
-""" sLog parsing """
+"""Log parsing"""
+from sys import stdin
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
-    import sys
+    statusCodes = {200: 0, 301: 0, 400: 0, 401: 0,
+                   403: 0, 404: 0, 405: 0, 500: 0}
+    totalSize = 0
 
-    def print_results(statusCodes, fileSize):
-        """ Print statistics """
-        print("File size: {:d}".format(fileSize))
-        for statusCode, times in sorted(statusCodes.items()):
-            if times:
-                print("{:s}: {:d}".format(statusCode, times))
+    def parseLine(line):
+        """Parses a line of known format"""
+        global totalSize
 
-    statusCodes = {"200": 0,
-                   "301": 0,
-                   "400": 0,
-                   "401": 0,
-                   "403": 0,
-                   "404": 0,
-                   "405": 0,
-                   "500": 0
-                   }
-    fileSize = 0
-    n_lines = 0
+        try:
+            toks = line.rstrip().split(' ')
+            totalSize += int(toks[-1])
+
+            if int(toks[-2]) in statusCodes:
+                statusCodes[int(toks[-2])] += 1
+
+        except BaseException:
+            pass
+
+    def printStats():
+        """Prints all current stats"""
+        print("File size: {}".format(totalSize))
+        for k in sorted(statusCodes.keys()):
+            if statusCodes[k]:
+                print("{}: {}".format(k, statusCodes[k]))
+
+    lineNb = 1
 
     try:
-        """ Read stdin line by line """
-        for line in sys.stdin:
-            if n_lines != 0 and n_lines % 10 == 0:
-                """ After every 10 lines, print from the beginning """
-                print_results(statusCodes, fileSize)
-            n_lines += 1
-            data = line.split()
-            try:
-                """ Compute metrics """
-                statusCode = data[-2]
-                if statusCode in statusCodes:
-                    statusCodes[statusCode] += 1
-                fileSize += int(data[-1])
-            except Exception:
-                pass
-        print_results(statusCodes, fileSize)
+        for line in stdin:
+            parseLine(line)
+            if lineNb % 10 == 0:
+                printStats()
+            lineNb += 1
     except KeyboardInterrupt:
-        """ Keyboard interruption, print from the beginning """
-        print_results(statusCodes, fileSize)
+        printStats()
         raise
+    printStats()
