@@ -3,35 +3,42 @@
 from sys import stdin
 
 
-codes = {'200': 0, '301': 0, '400': 0, '401': 0,
-         '403': 0, '404': 0, '405': 0, '500': 0}
-size = 0
+if __name__ == "__main__":
 
+    statusCodes = {200: 0, 301: 0, 400: 0, 401: 0,
+                   403: 0, 404: 0, 405: 0, 500: 0}
+    totalSize = 0
 
-def print_info():
-    """print_info method print needed info
-    Args:
-        codes (dict): code status
-        size (int): size of files
-    """
-    print("File size: {}".format(size))
-    for key, val in sorted(codes.items()):
-        if val > 0:
-            print("{}: {}".format(key, val))
+    def parseLine(line):
+        """Parses a line of known format"""
+        global totalSize
 
-if __name__ == '__main__':
+        try:
+            toks = line.rstrip().split(' ')
+            totalSize += int(toks[-1])
+
+            if int(toks[-2]) in statusCodes:
+                statusCodes[int(toks[-2])] += 1
+
+        except BaseException:
+            pass
+
+    def printStats():
+        """Prints all current stats"""
+        print("File size: {}".format(totalSize))
+        for k in sorted(statusCodes.keys()):
+            if statusCodes[k]:
+                print("{}: {}".format(k, statusCodes[k]))
+
+    lineNb = 1
+
     try:
-        for i, line in enumerate(stdin, 1):
-            try:
-                info = line.split()
-                size += int(info[-1])
-                if info[-2] in codes.keys():
-                    codes[info[-2]] += 1
-            except:
-                pass
-            if not i % 10:
-                print_info()
+        for line in stdin:
+            parseLine(line)
+            if lineNb % 10 == 0:
+                printStats()
+            lineNb += 1
     except KeyboardInterrupt:
-        print_info()
+        printStats()
         raise
-    print_info()
+    printStats()
