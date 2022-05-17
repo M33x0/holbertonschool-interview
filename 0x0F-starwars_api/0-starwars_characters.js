@@ -7,7 +7,7 @@ request.get(url, async (err, res, body) => {
   else {
     for (const character of JSON.parse(body).characters) {
       const name = await new Promise((resolve, reject) => {
-        request .get(character, (err, res, body) => {
+        request.get(character, (err, res, body) => {
           if (err) reject(err);
           else resolve(JSON.parse(body).name);
         });
