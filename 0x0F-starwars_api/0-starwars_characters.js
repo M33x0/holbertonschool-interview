@@ -15,5 +15,5 @@ request.get(url, async (err, res, body) => {
       });
       console.log(name);
     }
-  
+  }
 });
