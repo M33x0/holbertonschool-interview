@@ -15,9 +15,8 @@ skiplist_t *search_skip(skiplist_t *ben, skiplist_t *end, int value)
 	while (ben != end->next)
 	{
 		printf(fmt, ben->index, ben->n);
-		if (value == ben->n){
+		if (value == ben->n)
 			return (ben);
-		}
 		ben = ben->next;
 	}
 	return (NULL);
@@ -33,9 +32,8 @@ skiplist_t *linear_skip(skiplist_t *head, int value)
 	skiplist_t *ben, *end;
 	char *format = "Value checked at index [%li] = [%i]\n";
 
-	if (!head){
+	if (!head)
 		return (NULL);
-	}
 	end = head;
 	while (end && end->next && end->n < value)
 	{
@@ -46,9 +44,8 @@ skiplist_t *linear_skip(skiplist_t *head, int value)
 				end = end->next;
 			continue;
 		}
-		else{
+		else
 			end = end->express;
-		}
 		printf(format, end->index, end->n);
 	}
 	return (search_skip(ben, end, value));
